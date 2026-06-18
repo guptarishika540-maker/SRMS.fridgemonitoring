@@ -1,0 +1,474 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SRMS | Alerts &amp; Notifications</title>
+<script type="module" src="./auth-guard.js"></script>
+<script type="module" src="./navigation.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Hanken+Grotesk:wght@600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#acedff",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-surface": "#303032",
+                    "surface": "#fcf8fa",
+                    "surface-container": "#f0edef",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-container": "#0090a9",
+                    "secondary": "#0051d5",
+                    "outline": "#76777d",
+                    "primary-container": "#131b2e",
+                    "on-secondary-container": "#fefcff",
+                    "on-tertiary-fixed": "#001f26",
+                    "surface-dim": "#dcd9db",
+                    "surface-tint": "#565e74",
+                    "tertiary-container": "#001f26",
+                    "tertiary-fixed-dim": "#4cd7f6",
+                    "surface-container-highest": "#e4e2e4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#dae2fd",
+                    "tertiary": "#000000",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f3f0f2",
+                    "outline-variant": "#c6c6cd",
+                    "on-surface-variant": "#45464d",
+                    "on-error": "#ffffff",
+                    "background": "#fcf8fa",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-background": "#1b1b1d",
+                    "on-primary-fixed": "#131b2e",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "secondary-container": "#316bf3",
+                    "secondary-fixed": "#dbe1ff",
+                    "on-primary": "#ffffff",
+                    "primary": "#000000",
+                    "on-surface": "#1b1b1d",
+                    "on-tertiary-fixed-variant": "#004e5c",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-variant": "#e4e2e4",
+                    "surface-bright": "#fcf8fa",
+                    "on-primary-container": "#7c839b",
+                    "on-secondary-fixed": "#00174b",
+                    "surface-container-high": "#eae7e9",
+                    "surface-container-low": "#f6f3f5",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "1.5rem",
+                    "container-max-width": "1280px",
+                    "card-padding": "1.25rem",
+                    "margin-mobile": "1rem",
+                    "margin-desktop": "2rem",
+                    "stack-gap": "1rem"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display": ["Hanken Grotesk"],
+                    "badge": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "badge": ["11px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c6c6cd; border-radius: 10px; }
+        .alert-card-shadow { box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05); }
+        .glass-panel { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.8); }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none;appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.inset-4{inset:1rem}.-right-4{right:-1rem}.-top-4{top:-1rem}.bottom-10{bottom:2.5rem}.left-0{left:0px}.right-10{right:2.5rem}.top-0{top:0px}.top-1\.5{top:0.375rem}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.ml-\[240px\]{margin-left:240px}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-auto{margin-top:auto}.flex{display:flex}.grid{display:grid}.h-10{height:2.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-40{height:10rem}.h-6{height:1.5rem}.h-8{height:2rem}.h-\[400px\]{height:400px}.h-\[884px\]{height:884px}.w-10{width:2.5rem}.w-2{width:0.5rem}.w-40{width:10rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-\[240px\]{width:240px}.w-full{width:100%}.w-px{width:1px}.max-w-container-max-width{max-width:1280px}.flex-1{flex:1 1 0%}.translate-y-4{--tw-translate-y:1rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-0{--tw-translate-y:0px;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes ping{75%, 100%{transform:scale(2);opacity:0}}.animate-ping{animation:ping 1s cubic-bezier(0, 0, 0.2, 1) infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-margin-desktop{gap:2rem}.gap-stack-gap{gap:1rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.space-y-px > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1px * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-t{border-top-left-radius:0.25rem;border-top-right-radius:0.25rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11 / var(--tw-border-opacity, 1))}.border-error{--tw-border-opacity:1;border-color:rgb(186 26 26 / var(--tw-border-opacity, 1))}.border-outline{--tw-border-opacity:1;border-color:rgb(118 119 125 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(198 198 205 / var(--tw-border-opacity, 1))}.border-secondary{--tw-border-opacity:1;border-color:rgb(0 81 213 / var(--tw-border-opacity, 1))}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/10{background-color:rgb(245 158 11 / 0.1)}.bg-error{--tw-bg-opacity:1;background-color:rgb(186 26 26 / var(--tw-bg-opacity, 1))}.bg-error\/10{background-color:rgb(186 26 26 / 0.1)}.bg-error\/40{background-color:rgb(186 26 26 / 0.4)}.bg-on-surface{--tw-bg-opacity:1;background-color:rgb(27 27 29 / var(--tw-bg-opacity, 1))}.bg-outline{--tw-bg-opacity:1;background-color:rgb(118 119 125 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(198 198 205 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(19 27 46 / var(--tw-bg-opacity, 1))}.bg-secondary{--tw-bg-opacity:1;background-color:rgb(0 81 213 / var(--tw-bg-opacity, 1))}.bg-secondary-container{--tw-bg-opacity:1;background-color:rgb(49 107 243 / var(--tw-bg-opacity, 1))}.bg-secondary\/10{background-color:rgb(0 81 213 / 0.1)}.bg-surface{--tw-bg-opacity:1;background-color:rgb(252 248 250 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(240 237 239 / var(--tw-bg-opacity, 1))}.bg-surface-container-highest{--tw-bg-opacity:1;background-color:rgb(228 226 228 / var(--tw-bg-opacity, 1))}.bg-surface-container-low{--tw-bg-opacity:1;background-color:rgb(246 243 245 / var(--tw-bg-opacity, 1))}.bg-surface-container-lowest{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-secondary\/20{--tw-gradient-from:rgb(0 81 213 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(0 81 213 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-card-padding{padding:1.25rem}.p-margin-desktop{padding:2rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-margin-desktop{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-12{padding-bottom:3rem}.pl-8{padding-left:2rem}.pt-3{padding-top:0.75rem}.pt-6{padding-top:1.5rem}.text-right{text-align:right}.font-badge{font-family:Inter}.font-body-lg{font-family:Inter}.font-body-md{font-family:Inter}.font-display{font-family:Hanken Grotesk}.font-headline-lg{font-family:Hanken Grotesk}.font-headline-md{font-family:Hanken Grotesk}.font-label-md{font-family:JetBrains Mono}.text-8xl{font-size:6rem;line-height:1}.text-\[12px\]{font-size:12px}.text-\[16px\]{font-size:16px}.text-\[18px\]{font-size:18px}.text-badge{font-size:11px;line-height:12px;letter-spacing:0.05em;font-weight:700}.text-body-lg{font-size:16px;line-height:24px;font-weight:400}.text-body-md{font-size:14px;line-height:20px;font-weight:400}.text-display{font-size:32px;line-height:40px;font-weight:700}.text-headline-lg{font-size:24px;line-height:32px;font-weight:600}.text-headline-md{font-size:20px;line-height:28px;font-weight:600}.text-label-md{font-size:12px;line-height:16px;letter-spacing:0.02em;font-weight:500}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-none{line-height:1}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-error{--tw-text-opacity:1;color:rgb(186 26 26 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-on-error{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-secondary{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-secondary-container{--tw-text-opacity:1;color:rgb(254 252 255 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(27 27 29 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(69 70 77 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(118 119 125 / var(--tw-text-opacity, 1))}.text-outline-variant{--tw-text-opacity:1;color:rgb(198 198 205 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(0 81 213 / var(--tw-text-opacity, 1))}.text-surface{--tw-text-opacity:1;color:rgb(252 248 250 / var(--tw-text-opacity, 1))}.opacity-10{opacity:0.1}.opacity-20{opacity:0.2}.opacity-25{opacity:0.25}.opacity-40{opacity:0.4}.opacity-60{opacity:0.6}.opacity-70{opacity:0.7}.opacity-0{opacity:0}.opacity-100{opacity:1}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.duration-700{transition-duration:700ms}.before\:absolute::before{content:var(--tw-content);position:absolute}.before\:left-\[11px\]::before{content:var(--tw-content);left:11px}.before\:top-1::before{content:var(--tw-content);top:0.25rem}.before\:h-\[calc\(100\%-8px\)\]::before{content:var(--tw-content);height:calc(100% - 8px)}.before\:w-0\.5::before{content:var(--tw-content);width:0.125rem}.before\:bg-outline-variant::before{content:var(--tw-content);--tw-bg-opacity:1;background-color:rgb(198 198 205 / var(--tw-bg-opacity, 1))}.hover\:bg-secondary\/5:hover{background-color:rgb(0 81 213 / 0.05)}.hover\:bg-surface-container:hover{--tw-bg-opacity:1;background-color:rgb(240 237 239 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-container-high:hover{--tw-bg-opacity:1;background-color:rgb(234 231 233 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-container-highest:hover{--tw-bg-opacity:1;background-color:rgb(228 226 228 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-container-low:hover{--tw-bg-opacity:1;background-color:rgb(246 243 245 / var(--tw-bg-opacity, 1))}.hover\:text-secondary:hover{--tw-text-opacity:1;color:rgb(0 81 213 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.hover\:opacity-90:hover{opacity:0.9}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 768px){.md\:mt-0{margin-top:0px}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}}@media (min-width: 1024px){.lg\:col-span-2{grid-column:span 2 / span 2}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden" data-mode="connect">
+<!-- Shell Layout -->
+<div class="flex h-[884px] w-full" data-stitch-vh="h-[884px]===h-screen">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-[884px] w-[240px] bg-surface-container border-r border-outline-variant flex flex-col py-6 px-4 z-50" data-stitch-vh="h-[884px]===h-screen">
+<div class="mb-10 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">kitchen</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-secondary">SRMS Control</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Unit #402-B</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<!-- Dashboard -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Inventory -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<!-- Notifications (Active) -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</a>
+<!-- Analytics -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<!-- About -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-label-md text-label-md">About</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-6 border-t border-outline-variant">
+<button class="w-full bg-secondary text-on-secondary py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-bold transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+                    Quick Scan
+                </button>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] flex-1 h-[884px] flex flex-col overflow-hidden relative" data-stitch-vh="h-[884px]===h-screen">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center px-margin-desktop w-full h-16 bg-surface border-b border-outline-variant sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg text-headline-lg text-primary">Alerts &amp; Notifications</h2>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="bg-error text-on-error px-2 py-0.5 rounded-full font-badge text-badge flex items-center gap-1 animate-pulse">
+<span class="material-symbols-outlined text-[12px]">priority_high</span>
+                        3 ACTIVE
+                    </div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="thermostat">thermostat</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<img alt="User profile photo" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXLUwCntKK_LzgfGVg0_elySnKDN8zDkqnZWPnp_8kg2ZEdngndDfkCABUV4og1kXpRPBxu68vmzZGeXvVo0Mvxwak3kwmCBHyK6FDBUcYT9BsLPRnPUlaKQRV8-P7ZEbEsiRc3hq-j9_JLs5zVJFdWasBwYZUXhzNqO73T1FeCGR8vcl36ciBHUB0NCBuSS3ZKbPhe1q1s86qwWKwj4Y-zWoMipZx8CoGdiIigjNX6VlneHoYEScu_GCAm1ZXxBc8puF1N1g7s-WX">
+</div>
+</header>
+<!-- Page Content Scroll Area -->
+<div class="flex-1 overflow-y-auto p-margin-desktop custom-scrollbar space-y-8">
+<!-- Action Bar -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div class="flex gap-2 p-1 bg-surface-container rounded-xl">
+<button class="px-4 py-2 bg-surface rounded-lg shadow-sm font-label-md text-label-md text-secondary font-bold transition-all">All Notifications</button>
+<button class="px-4 py-2 hover:bg-surface-container-highest rounded-lg font-label-md text-label-md text-on-surface-variant transition-all">Unread</button>
+<button class="px-4 py-2 hover:bg-surface-container-highest rounded-lg font-label-md text-label-md text-on-surface-variant transition-all">Archived</button>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-secondary text-secondary font-bold hover:bg-secondary/5 transition-all active:scale-95" id="buzzer-btn" onclick="toggleBuzzer(this)">
+<span class="material-symbols-outlined text-[18px]" id="buzzer-icon">volume_up</span>
+                            Buzzer Mute
+                        </button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-on-surface text-surface font-bold hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+                            Clear All
+                        </button>
+</div>
+</div>
+<!-- Active Summary Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Critical Card -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl border-l-4 border-error alert-card-shadow flex flex-col gap-3 relative overflow-hidden group transition-all duration-700 opacity-100 translate-y-0">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl text-error">error</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-error/10 text-error flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">device_thermostat</span>
+</div>
+<span class="font-label-md text-label-md text-error bg-error/10 px-2 py-0.5 rounded">HIGH SEVERITY</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Temperature High</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Main Compartment is at <span class="text-error font-bold italic">46Â°F</span> (Ideal: 34-38Â°F)</p>
+</div>
+<div class="mt-2 pt-3 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-md text-label-md text-outline">Detected 12m ago</span>
+<button class="text-secondary font-bold text-label-md hover:underline">INVESTIGATE</button>
+</div>
+</div>
+<!-- Warning Card -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl border-l-4 border-amber-500 alert-card-shadow flex flex-col gap-3 relative overflow-hidden group transition-all duration-700 opacity-100 translate-y-0">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl text-amber-500">door_open</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">door_open</span>
+</div>
+<span class="font-label-md text-label-md text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded">MEDIUM SEVERITY</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Door Open &gt; 10 secs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The freezer door has been left ajar. Energy consumption rising.</p>
+</div>
+<div class="mt-2 pt-3 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-md text-label-md text-outline">Detected 6m ago</span>
+<button class="text-secondary font-bold text-label-md hover:underline">DISMISS</button>
+</div>
+</div>
+<!-- Info Card -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl border-l-4 border-secondary alert-card-shadow flex flex-col gap-3 relative overflow-hidden group transition-all duration-700 opacity-100 translate-y-0">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl text-secondary">inventory_2</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+</div>
+<span class="font-label-md text-label-md text-secondary bg-secondary/10 px-2 py-0.5 rounded">LOW SEVERITY</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Expiry Alert: Eggs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">12 items expiring in <span class="font-bold">2 days</span>. Consider using soon.</p>
+</div>
+<div class="mt-2 pt-3 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-md text-label-md text-outline">Detected 1h ago</span>
+<button class="text-secondary font-bold text-label-md hover:underline">ADD TO LIST</button>
+</div>
+</div>
+</div>
+<!-- Main Layout: List & Timeline -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-margin-desktop pb-12">
+<!-- Notification List (2/3) -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-md text-headline-md text-on-surface">Recent Activity</h4>
+<div class="relative">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-outline-variant text-label-md hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+                                    Filter by Severity
+                                </button>
+</div>
+</div>
+<!-- List Items -->
+<div class="space-y-px rounded-xl overflow-hidden border border-outline-variant bg-surface-container-lowest shadow-sm">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 p-4 bg-surface hover:bg-surface-container-low transition-colors group">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="material-symbols-outlined text-error" data-icon="error">error</span>
+<div class="flex-1">
+<p class="font-body-lg text-body-lg font-bold text-on-surface">Temperature Critical Failure</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Unit reached 52Â°F due to external power surge.</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline">10:45 AM</p>
+<p class="font-badge text-badge text-error uppercase">Action Required</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 p-4 bg-surface hover:bg-surface-container-low transition-colors group">
+<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+<span class="material-symbols-outlined text-amber-500" data-icon="warning">warning</span>
+<div class="flex-1">
+<p class="font-body-lg text-body-lg font-bold text-on-surface">Door Ajar Detected</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Manual bypass initiated by user.</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline">09:12 AM</p>
+<p class="font-badge text-badge text-amber-600 uppercase">Resolved</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center gap-4 p-4 bg-surface hover:bg-surface-container-low transition-colors group">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+<div class="flex-1">
+<p class="font-body-lg text-body-lg font-bold text-on-surface">System Update Successful</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Firmware updated to v4.2.1. New security patches applied.</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline">Yesterday</p>
+<p class="font-badge text-badge text-secondary uppercase">System</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center gap-4 p-4 bg-surface hover:bg-surface-container-low transition-colors group">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<span class="material-symbols-outlined text-outline" data-icon="water_drop">water_drop</span>
+<div class="flex-1">
+<p class="font-body-lg text-body-lg font-bold text-on-surface">Filter Replacement Reminder</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Water filter lifecycle at 10% remaining capacity.</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline">2 days ago</p>
+<p class="font-badge text-badge text-outline-variant uppercase">Maintenance</p>
+</div>
+</div>
+</div>
+</div>
+<!-- History Timeline (1/3) -->
+<div class="space-y-4">
+<h4 class="font-headline-md text-headline-md text-on-surface">Alert History</h4>
+<div class="bg-surface-container-low rounded-xl p-card-padding border border-outline-variant h-[400px] overflow-y-auto custom-scrollbar">
+<div class="relative space-y-8 before:absolute before:left-[11px] before:top-1 before:h-[calc(100%-8px)] before:w-0.5 before:bg-outline-variant">
+<!-- Timeline Item -->
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-surface border-2 border-error flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">OCT 24, 08:30 PM</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">Critical Overheat</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Compressor stalled for 45 minutes.</p>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-surface border-2 border-secondary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">OCT 24, 12:15 PM</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">Power Outage Detected</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Unit switched to battery backup mode.</p>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8 opacity-60">
+<div class="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-surface border-2 border-outline flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">OCT 23, 04:00 PM</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">Defrost Cycle Complete</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Automatic maintenance routine finished.</p>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8 opacity-40">
+<div class="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-surface border-2 border-outline flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">OCT 22, 11:00 AM</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">Weekly Inventory Report</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Sent to linked mobile device.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Mini Data Viz Card -->
+<div class="bg-primary-container p-card-padding rounded-xl text-surface border border-outline-variant overflow-hidden relative">
+<div class="z-10 relative">
+<h5 class="font-label-md text-label-md opacity-70">Uptime Reliability</h5>
+<div class="flex items-end gap-2 mt-2">
+<span class="font-display text-display leading-none">99.8%</span>
+<span class="text-green-400 font-bold mb-1">â†‘ 0.2%</span>
+</div>
+<div class="mt-4 flex gap-1 h-8 items-end">
+<div class="flex-1 bg-secondary rounded-t" style="height: 60%"></div>
+<div class="flex-1 bg-secondary rounded-t" style="height: 80%"></div>
+<div class="flex-1 bg-secondary rounded-t" style="height: 45%"></div>
+<div class="flex-1 bg-secondary rounded-t" style="height: 90%"></div>
+<div class="flex-1 bg-secondary rounded-t" style="height: 70%"></div>
+<div class="flex-1 bg-secondary rounded-t" style="height: 85%"></div>
+<div class="flex-1 bg-secondary-container rounded-t" style="height: 100%"></div>
+</div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/20 to-transparent"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="w-full py-8 bg-surface-container-highest border-t border-outline-variant mt-auto">
+<div class="max-w-container-max-width mx-auto flex flex-col md:flex-row justify-between items-center px-margin-desktop">
+<p class="font-body-md text-body-md text-on-surface-variant">Â© 2024 Smart Refrigerator Monitoring System. All rights reserved.</p>
+<div class="flex gap-6 mt-4 md:mt-0">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all hover:underline" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all hover:underline" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all hover:underline" href="#">API Documentation</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all hover:underline" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<!-- Atmospheric Floating Animation (subtle alert pulse) -->
+<div class="fixed bottom-10 right-10 pointer-events-none opacity-20">
+<div class="relative w-40 h-40">
+<div class="absolute inset-0 bg-error rounded-full animate-ping opacity-25"></div>
+<div class="absolute inset-4 bg-error/40 rounded-full animate-pulse opacity-25"></div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        let isMuted = false;
+        function toggleBuzzer(btn) {
+            isMuted = !isMuted;
+            const icon = document.getElementById('buzzer-icon');
+            if (isMuted) {
+                icon.textContent = 'volume_off';
+                btn.classList.add('bg-secondary', 'text-on-secondary');
+                btn.classList.remove('text-secondary');
+                btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">volume_off</span> Buzzer Muted`;
+            } else {
+                icon.textContent = 'volume_up';
+                btn.classList.remove('bg-secondary', 'text-on-secondary');
+                btn.classList.add('text-secondary');
+                btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">volume_up</span> Buzzer Mute`;
+            }
+        }
+
+        // Intersection Observer for scroll reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.alert-card-shadow').forEach(card => {
+            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(card);
+        });
+    </script>
+</body></html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About | SRMS Control</title>
+<script type="module" src="./auth-guard.js"></script>
+<script type="module" src="./navigation.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#acedff",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-surface": "#303032",
+                    "surface": "#fcf8fa",
+                    "surface-container": "#f0edef",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-container": "#0090a9",
+                    "secondary": "#0051d5",
+                    "outline": "#76777d",
+                    "primary-container": "#131b2e",
+                    "on-secondary-container": "#fefcff",
+                    "on-tertiary-fixed": "#001f26",
+                    "surface-dim": "#dcd9db",
+                    "surface-tint": "#565e74",
+                    "tertiary-container": "#001f26",
+                    "tertiary-fixed-dim": "#4cd7f6",
+                    "surface-container-highest": "#e4e2e4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#dae2fd",
+                    "tertiary": "#000000",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f3f0f2",
+                    "outline-variant": "#c6c6cd",
+                    "on-surface-variant": "#45464d",
+                    "on-error": "#ffffff",
+                    "background": "#fcf8fa",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-background": "#1b1b1d",
+                    "on-primary-fixed": "#131b2e",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "secondary-container": "#316bf3",
+                    "secondary-fixed": "#dbe1ff",
+                    "on-primary": "#ffffff",
+                    "primary": "#000000",
+                    "on-surface": "#1b1b1d",
+                    "on-tertiary-fixed-variant": "#004e5c",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-variant": "#e4e2e4",
+                    "surface-bright": "#fcf8fa",
+                    "on-primary-container": "#7c839b",
+                    "on-secondary-fixed": "#00174b",
+                    "surface-container-high": "#eae7e9",
+                    "surface-container-low": "#f6f3f5",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "1.5rem",
+                    "container-max-width": "1280px",
+                    "card-padding": "1.25rem",
+                    "margin-mobile": "1rem",
+                    "margin-desktop": "2rem",
+                    "stack-gap": "1rem"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display": ["Hanken Grotesk"],
+                    "badge": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "badge": ["11px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #fcf8fa; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: #316bf3;
+            color: #fefcff;
+            font-weight: 700;
+        }
+        .bento-card {
+            background: #ffffff;
+            box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0px 2px 10px rgba(15, 23, 42, 0.08);
+            transform: translateY(-2px);
+        }
+        .status-border-blue { border-left: 4px solid #2563EB; }
+        .status-border-navy { border-left: 4px solid #0F172A; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<nav class="fixed left-0 top-0 h-screen w-[240px] flex flex-col h-full py-6 px-4 border-r border-outline-variant bg-surface-container dark:bg-surface-container-lowest z-50 hidden md:flex">
+<div class="mb-8 px-3">
+<h1 class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">SRMS Control</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Unit #402-B</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<!-- Dashboard -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<!-- Inventory -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</div>
+<!-- Notifications -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</div>
+<!-- Analytics -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<!-- About (ACTIVE) -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform bg-secondary-container text-on-secondary-container rounded-lg font-bold">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-label-md text-label-md">About</span>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-2 border-t border-outline-variant pt-6">
+<button class="w-full bg-secondary text-on-secondary py-3 rounded-lg font-bold text-label-md mb-4 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+                Quick Scan
+            </button>
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</div>
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</div>
+</div>
+</nav>
+<!-- TopAppBar for Mobile -->
+<header class="md:hidden flex justify-between items-center px-4 h-16 w-full sticky top-0 z-50 bg-surface border-b border-outline-variant shadow-sm">
+<h1 class="font-display text-headline-md text-primary">SRMS</h1>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="thermostat">thermostat</span>
+<span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="md:ml-[240px] p-6 md:p-margin-desktop min-h-screen">
+<div class="max-w-[1000px] mx-auto">
+<!-- Page Header -->
+<header class="mb-12">
+<div class="flex items-center gap-2 text-secondary mb-2">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-label-md text-label-md uppercase tracking-widest">Project Documentation</span>
+</div>
+<h2 class="font-display text-display text-primary mb-4">About the System</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                    The Smart Refrigerator Monitoring System (SRMS) is a professional-grade IoT solution designed to safeguard perishables through real-time environmental telemetry and intelligent inventory tracking.
+                </p>
+</header>
+<!-- Project Overview Bento Section -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
+<section class="md:col-span-8 bento-card p-card-padding rounded-xl status-border-blue">
+<h3 class="font-headline-md text-headline-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="rocket_launch">rocket_launch</span>
+                        Project Overview
+                    </h3>
+<div class="space-y-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+<p>SRMS was conceived to solve the critical challenge of food waste and safety in modern households and commercial kitchens. By leveraging precise sensor arrays, we provide users with high-fidelity data regarding their cold-storage environments.</p>
+<ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<span>Real-time temperature &amp; humidity monitoring with threshold alerts.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<span>Automated door-state detection to prevent thermal leakage.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<span>Historical trend analysis for equipment performance auditing.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<span>Seamless cloud integration for remote access anywhere.</span>
+</li>
+</ul>
+</div>
+</section>
+<div class="md:col-span-4 bento-card rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A professional close-up of high-tech circuit boards and glowing blue LED indicators in a clean laboratory environment. The lighting is crisp and cool, emphasizing a modern industrial aesthetic. The color palette is dominated by professional navy blues, brushed metallic silvers, and precise white highlights. The image evokes a sense of reliability, precision, and advanced engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0EYc2HeKRJN4e1O2UxMKV_VU_1mpCgdImciPA-13m1mTwOwbej-Pof2SIg1269dTDlBU8Co8ra-WMp6z1p5Co2VTsLx_h4xgNZq40sq6JZvyoUa1nI8fiXy4-fsTOoJFGqB3qVaXmLun6l6_JMeFx2f_OCBi41wgeU3B5jbKWUfd2y3PnN8htWnlfGA2t7wtET8dxUgi2evhj6jl9pKjGUQW-U_z5NZ6zxTS9ujEc5NMh9iqCTgtElth6aeGa91OMgMpXuvE0qjX_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-card-padding text-white">
+<span class="font-label-md text-label-md text-secondary-fixed">ENGINEERING FOCUS</span>
+<p class="font-headline-md text-headline-md">Dependable IoT Architecture</p>
+</div>
+</div>
+</div>
+<!-- Hardware Components Section -->
+<section class="mb-12">
+<h3 class="font-headline-md text-headline-md mb-6">Hardware Ecosystem</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- ESP32 -->
+<div class="bento-card p-card-padding rounded-xl flex flex-col h-full border border-outline-variant">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mb-4 text-secondary">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<h4 class="font-headline-md text-[18px] mb-2">ESP32 Microcontroller</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow">The brain of the system. Dual-core processing with integrated Wi-Fi and Bluetooth for low-latency data transmission.</p>
+<span class="mt-4 font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded inline-block w-fit">Core Controller</span>
+</div>
+<!-- DHT11 -->
+<div class="bento-card p-card-padding rounded-xl flex flex-col h-full border border-outline-variant">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mb-4 text-secondary">
+<span class="material-symbols-outlined" data-icon="device_thermostat">device_thermostat</span>
+</div>
+<h4 class="font-headline-md text-[18px] mb-2">DHT11 Sensor</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow">High-precision digital sensor providing consistent temperature and relative humidity readings every 2 seconds.</p>
+<span class="mt-4 font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded inline-block w-fit">Environment Monitoring</span>
+</div>
+<!-- Reed Switch -->
+<div class="bento-card p-card-padding rounded-xl flex flex-col h-full border border-outline-variant">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mb-4 text-secondary">
+<span class="material-symbols-outlined" data-icon="door_open">door_open</span>
+</div>
+<h4 class="font-headline-md text-[18px] mb-2">Door Reed Switch</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow">Magnetic proximity sensor used to detect door status, triggering alerts if the unit remains unsealed.</p>
+<span class="mt-4 font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded inline-block w-fit">Security &amp; Efficiency</span>
+</div>
+</div>
+</section>
+<!-- Tech Stack & Integration -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<section class="bento-card p-card-padding rounded-xl status-border-navy">
+<h3 class="font-headline-md text-headline-md mb-6">Cloud &amp; Backend</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="mt-1 text-secondary"><span class="material-symbols-outlined" data-icon="database">database</span></div>
+<div>
+<h4 class="font-headline-md text-[16px] mb-1">Firebase Realtime DB</h4>
+<p class="font-body-md text-on-surface-variant leading-snug">NoSQL database providing sub-second latency for live sensor updates to all connected dashboard instances.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="mt-1 text-secondary"><span class="material-symbols-outlined" data-icon="lock">lock</span></div>
+<div>
+<h4 class="font-headline-md text-[16px] mb-1">Firebase Authentication</h4>
+<p class="font-body-md text-on-surface-variant leading-snug">Enterprise-grade user management ensuring that control of the SRMS unit remains restricted to authorized personnel.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="bento-card p-card-padding rounded-xl border border-outline-variant">
+<h3 class="font-headline-md text-headline-md mb-4">Software Architecture</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">React 18</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">Vite</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">Tailwind CSS</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">Recharts</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">TypeScript</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high font-label-md text-label-md">Framer Motion</span>
+</div>
+<div class="mt-6 p-4 bg-surface-container-low rounded-lg">
+<p class="font-body-md text-body-md italic text-on-surface-variant">
+                            "Built with a focus on performance and modularity, the frontend leverages modern build tools to ensure a seamless reactive experience for the end user."
+                        </p>
+</div>
+</section>
+</div>
+<!-- Team Section -->
+<section class="mb-12">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="font-headline-md text-headline-md">Development Team</h3>
+<p class="font-body-md text-on-surface-variant">The minds behind the hardware and software integration.</p>
+</div>
+<button class="hidden sm:block text-secondary font-label-md hover:underline">Contact Support</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<!-- Member 1 -->
+<div class="text-center group">
+<div class="w-full aspect-square rounded-2xl bg-surface-container-highest mb-4 overflow-hidden relative">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A clean, professional headshot of a male software engineer with a friendly expression. The background is a soft-focus modern tech office with neutral grey and blue tones. The lighting is professional and high-key, aligning with a corporate, dependable brand identity. He is wearing a professional navy blue sweater." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo567Hes2uvdTnTvg5m5nAlO-aShSeSuuqrZKrO3vPYeDpqzF_kr55LYm43g3jbg0iMLlqH009XWt7PcYw91xwOTxmGJk8PE7fyU9MQ1GfnxxoxlunipHAMxxL_NoY2qJCmyCZ3dnYERoCHGf2XxQC7thTBDBebmShA1LTkQh7kB0m0_pLRqdbIW2aq_22zVIhDJ0K8Juge5QmudhY3f3BMLY_olEfS6bbs3-0gQex52AjkPUnkxjakeIAHU6fsximFJlh7ypciWyk"/>
+</div>
+<h5 class="font-headline-md text-[16px] mb-0.5">Alex Rivers</h5>
+<p class="font-label-md text-on-surface-variant">Lead Hardware Eng.</p>
+</div>
+<!-- Member 2 -->
+<div class="text-center group">
+<div class="w-full aspect-square rounded-2xl bg-surface-container-highest mb-4 overflow-hidden relative">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A professional studio portrait of a female UI designer with a creative yet serious demeanor. The lighting is soft and flattering, creating a bright and modern aesthetic. The background is a minimalist off-white surface. She is wearing a structured white blazer, fitting the corporate modern professional style of the SRMS brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKF_AzrlYgr4gsvFa5kDl-TCmPfSQ9Blu2r8qm0sh47ccCW4fwJ2iOJJuqYrOO6vuobsZ5KtPI6Z136mAUNukMxZD5IyZGJQe24n0FX3bJVsqw7bMiM2J1LRWaI0CiU91dt3VeA6Jr92SRl5Juq-MCZe9WWgAliBL_SGlctUxALbisf3FcjDWzdL3013qiqmNDUY5I-9ywg-BqglGv0T7mS78SZThDbnC-qUQSOxkt6WyLXvKxhetE-_qsWiTY4VqOWJ2Wl0Tr9sJv"/>
+</div>
+<h5 class="font-headline-md text-[16px] mb-0.5">Sarah Chen</h5>
+<p class="font-label-md text-on-surface-variant">Senior UI Architect</p>
+</div>
+<!-- Member 3 -->
+<div class="text-center group">
+<div class="w-full aspect-square rounded-2xl bg-surface-container-highest mb-4 overflow-hidden relative">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A portrait of a male backend developer in a modern, well-lit office workspace. He is looking confidently at the camera, wearing a professional charcoal grey shirt. The scene is bright and airy, with a focus on clean lines and technical professionalism. The color palette is composed of soft greys and deep blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI4t7yFK-tgjTrGCQIOyLfhR8ZiA1GhDemrfyz9YaXV9hpF6wC3dHrWdzOpHQigRTQzCDVwIB33z-CpxLk0n_k-Eol6XV1peHodx68aceQxt0sOR9KIE2AfPYvcSmibsWj8pOJTWj0EqPUj_HxDZgV2qhfXa8wKJV-1OprJE936ppfjS9DTY4II90JU8zq-VLnYiQrdLA2OvlBQy46bRglK2D7PeJUxuv6q5tCvYTFezDKm41ThxHT7HuKvi_4R1y4-dCdUeJxUYeJ"/>
+</div>
+<h5 class="font-headline-md text-[16px] mb-0.5">Jordan Vane</h5>
+<p class="font-label-md text-on-surface-variant">Backend Specialist</p>
+</div>
+<!-- Member 4 -->
+<div class="text-center group">
+<div class="w-full aspect-square rounded-2xl bg-surface-container-highest mb-4 overflow-hidden relative">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A professional headshot of a female systems analyst in a professional setting. She is wearing a smart blazer and has a confident, reliable presence. The image is bright and clean with soft shadows, using a color palette of white, light grey, and navy blue. The mood is precise and utilitarian, reflecting the SRMS core identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkffG5em0bVba4ammSZkXOxCRURPuAhogcLk9ifrXtBVIgTKOzId6npIX9JSvJdTfnIycbyE7MYprgkI9ar5M2S532y9i8iG8y05qWOorEB9oESTC9DqKcVEoixsk8lGF8ZapJ0g2aHAOYrg6H7gXhqS0yLhg2RTQ0DB4jJpHVTD7751BVYW7wnfC9hRo7N0KjjyWkeMK1yRiYrHOR2xZZMcv9YJIW3mPyrf4f4BMtx1pdiFzNQn42Xs3o-hlBTshJ7s2AmdRxqVSk"/>
+</div>
+<h5 class="font-headline-md text-[16px] mb-0.5">Maya Patel</h5>
+<p class="font-label-md text-on-surface-variant">Systems Analyst</p>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-8 border-t border-outline-variant max-w-container-max-width mx-auto flex flex-col md:flex-row justify-between items-center bg-surface-container-highest dark:bg-surface-container-lowest mt-12 rounded-t-xl px-margin-desktop">
+<div class="mb-4 md:mb-0">
+<h4 class="font-headline-md text-headline-md text-primary dark:text-inverse-primary">SRMS</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Â© 2024 Smart Refrigerator Monitoring System. All rights reserved.</p>
+</div>
+<div class="flex gap-6">
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Terms of Service</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">API Documentation</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Contact</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Mobile Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant flex justify-around items-center h-16 z-50">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-label-md">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-label-md">Inventory</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-secondary font-bold">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="text-[10px] font-label-md">About</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-label-md">Setup</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for hover states and active button feedback
+        document.querySelectorAll('button, .group').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.classList.add('scale-95');
+            });
+            el.addEventListener('mouseup', () => {
+                el.classList.remove('scale-95');
+            });
+            el.addEventListener('mouseleave', () => {
+                el.classList.remove('scale-95');
+            });
+        });
+
+        // Sidebar active state logic (simplified for static display)
+        console.log('SRMS About Page initialized.');
+    </script>
+</body></html>

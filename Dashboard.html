@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SRMS | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="./auth-guard.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#acedff",
+                        "inverse-primary": "#bec6e0",
+                        "inverse-surface": "#303032",
+                        "surface": "#fcf8fa",
+                        "surface-container": "#f0edef",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#0090a9",
+                        "secondary": "#0051d5",
+                        "outline": "#76777d",
+                        "primary-container": "#131b2e",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-dim": "#dcd9db",
+                        "surface-tint": "#565e74",
+                        "tertiary-container": "#001f26",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface-container-highest": "#e4e2e4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dae2fd",
+                        "tertiary": "#000000",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f3f0f2",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface-variant": "#45464d",
+                        "on-error": "#ffffff",
+                        "background": "#fcf8fa",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-background": "#1b1b1d",
+                        "on-primary-fixed": "#131b2e",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "secondary-container": "#316bf3",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "on-surface": "#1b1b1d",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-variant": "#e4e2e4",
+                        "surface-bright": "#fcf8fa",
+                        "on-primary-container": "#7c839b",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-container-high": "#eae7e9",
+                        "surface-container-low": "#f6f3f5",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "container-max-width": "1280px",
+                        "card-padding": "1.25rem",
+                        "margin-mobile": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display": ["Hanken Grotesk"],
+                        "badge": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "badge": ["11px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-card-shadow {
+            box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+        }
+        .status-border-ok { border-left: 4px solid #10b981; }
+        .status-border-warning { border-left: 4px solid #f59e0b; }
+        .status-border-info { border-left: 4px solid #3b82f6; }
+        .status-border-red { border-left: 4px solid #ba1a1a; }
+        
+        .chart-container {
+            position: relative;
+            height: 240px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-screen w-[240px] bg-surface-container dark:bg-surface-container-lowest flex flex-col py-6 px-4 border-r border-outline-variant z-50 hidden md:flex">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed">SRMS Control</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Unit #402-B</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<!-- Active State: Dashboard -->
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-label-md text-label-md">About</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-6 border-t border-outline-variant">
+<button class="bg-primary text-on-primary p-3 rounded-lg font-bold flex items-center justify-center gap-2 mb-4 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-label-md text-label-md">Quick Scan</span>
+</button>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-[240px] flex-1">
+<!-- TopNavBar Anchor -->
+<header class="flex justify-between items-center px-margin-desktop w-full h-16 sticky top-0 z-40 bg-surface dark:bg-surface-container-highest border-b border-outline-variant dark:border-outline shadow-sm">
+<div class="flex items-center gap-4">
+<span class="md:hidden material-symbols-outlined text-primary cursor-pointer" data-icon="menu">menu</span>
+<h2 class="font-display text-display text-primary dark:text-inverse-primary">SRMS</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-surface-container-high px-4 py-2 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md ml-2 w-64 outline-none" placeholder="Search inventory..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="thermostat">thermostat</span>
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="warning">warning</span>
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="settings">settings</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a modern homeowner in a bright, high-tech kitchen environment. The lighting is soft and natural, emphasizing a clean, contemporary aesthetic that matches the professional IoT system interface. The overall mood is dependable and sophisticated, consistent with a premium smart home monitoring service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCAXcXaRltXiCinhwRfMnfBUCsNkG3zvyftpxHygAiUBK0laf3gDRFxo7RlEaKU0gBne8jJepC7LvC0aNRLF2ccx5yCCqhtYOjCBXZrAnUtjkK4rdThssF9ECZGFVFo-yMTkSGFFq-2dO0xgIVLeGGZGQVBr82yhMlU_q0ts1nNGH3hasjjvsku1mKLOuHsZxdD2_dii3XMjuwDpD_mLTiEpzB2sOuThoYvQSt6dIvfPGs6V1iWOTj-wMNRTEJ_GWi6B2rxrlV_Z6W"/>
+</div>
+</div>
+</div>
+</header>
+<div class="p-margin-desktop space-y-gutter">
+<!-- Breadcrumbs / Title Row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h3 class="font-headline-lg text-headline-lg">System Overview</h3>
+<p class="font-body-md text-on-surface-variant">Last synced: 2 minutes ago</p>
+</div>
+<button onclick="location.href='Inventory.html?add=true'" class="bg-secondary text-on-secondary px-6 py-2 rounded-lg font-bold flex items-center gap-2 custom-card-shadow hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-label-md text-label-md">Add Inventory</span>
+</button>
+</div>
+<!-- Bento Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Temperature -->
+<div id="temp-card" class="bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow status-border-info transition-all hover:-translate-y-1">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-secondary">device_thermostat</span>
+<span id="temp-badge" class="font-badge text-badge text-secondary-container bg-secondary px-2 py-0.5 rounded-full">OPTIMAL</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Temperature</p>
+<h4 id="temp-val" class="font-display text-display text-primary mt-1">--.-°C</h4>
+<p id="temp-info" class="font-label-md text-label-md text-on-tertiary-container mt-2">Syncing...</p>
+</div>
+<!-- Humidity -->
+<div id="humidity-card" class="bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow status-border-info transition-all hover:-translate-y-1">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-secondary">humidity_mid</span>
+<span id="humidity-badge" class="font-badge text-badge text-secondary-container bg-secondary px-2 py-0.5 rounded-full">NORMAL</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Humidity</p>
+<h4 id="humidity-val" class="font-display text-display text-primary mt-1">--%</h4>
+<p id="humidity-info" class="font-label-md text-label-md text-on-tertiary-container mt-2">Syncing...</p>
+</div>
+<!-- Door Status -->
+<div id="door-card" class="bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow status-border-ok transition-all hover:-translate-y-1">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary">door_front</span>
+<span id="door-badge" class="font-badge text-badge text-on-secondary bg-outline px-2 py-0.5 rounded-full">SECURE</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Door Status</p>
+<h4 id="door-val" class="font-display text-display text-primary mt-1">Closed</h4>
+<p id="door-info" class="font-label-md text-label-md text-on-surface-variant mt-2">Syncing...</p>
+</div>
+<!-- Alert Status -->
+<div id="alert-card" class="bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow status-border-ok transition-all hover:-translate-y-1">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" id="alert-icon">warning</span>
+<span id="alert-badge" class="font-badge text-badge bg-outline text-on-secondary px-2 py-0.5 rounded-full">NORMAL</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Alert Status</p>
+<h4 id="alert-val" class="font-display text-display text-primary mt-1">None</h4>
+<p id="alert-info" class="font-label-md text-label-md text-on-surface-variant mt-2">All systems normal</p>
+</div>
+</div>
+<!-- Main Insights Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Temperature History Chart -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="timeline">timeline</span>
+<h5 class="font-headline-md text-headline-md">Temperature History (24h)</h5>
+</div>
+<select class="bg-surface-container-low border-outline-variant rounded-lg text-body-md px-3 py-1 outline-none">
+<option>Last 24 Hours</option>
+<option>Last 7 Days</option>
+</select>
+</div>
+<div class="chart-container flex-1 min-h-[200px] mt-4">
+  <canvas id="dashboardTempChart" class="w-full h-full"></canvas>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="bg-surface-container-lowest p-card-padding rounded-xl custom-card-shadow flex flex-col">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="history">history</span>
+<h5 class="font-headline-md text-headline-md">Recent Activity</h5>
+</div>
+<div id="recent-activity-container" class="space-y-4 overflow-y-auto max-h-[300px] pr-2">
+  <div class="text-center py-8 text-on-surface-variant">Syncing activity...</div>
+</div>
+<button class="mt-auto pt-4 text-secondary font-bold text-label-md hover:underline text-center">View All Activity</button>
+</div>
+</div>
+<!-- Decorative/Atmospheric Section -->
+<div class="relative w-full h-48 rounded-xl overflow-hidden custom-card-shadow">
+
+<div class="absolute inset-0 bg-gradient-to-r from-primary-container/80 to-transparent flex flex-col justify-center px-card-padding text-on-secondary-container">
+<h6 class="font-display text-display leading-tight">Smart Cooling<br/>Intelligent Monitoring</h6>
+<p class="font-body-lg text-body-lg opacity-80 mt-2">Active AI balancing internal humidity and airflow.</p>
+</div>
+</div>
+</div>
+<!-- Footer Anchor -->
+<footer class="w-full py-8 bg-surface-container-highest dark:bg-surface-container-lowest border-t border-outline-variant mt-margin-desktop">
+<div class="max-w-container-max-width mx-auto flex flex-col md:flex-row justify-between items-center px-margin-desktop gap-4">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-md text-headline-md text-primary dark:text-inverse-primary">SRMS</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left mt-1">Â© 2024 Smart Refrigerator Monitoring System. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">API Documentation</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary hover:underline transition-all" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant flex justify-around items-center h-16 px-4 z-50">
+<a class="flex flex-col items-center text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold">Dash</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px]">Inventory</span>
+</a>
+<div class="relative -top-6 bg-secondary text-on-secondary p-4 rounded-full shadow-lg border-4 border-background">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</div>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px]">Alerts</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px]">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => button.classList.add('scale-95'));
+            button.addEventListener('mouseup', () => button.classList.remove('scale-95'));
+            button.addEventListener('mouseleave', () => button.classList.remove('scale-95'));
+        });
+    </script>
+    <script type="module">
+        import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { db } from "./firebase-init.js";
+        import "./navigation.js";
+
+        // DOM elements
+        const tempVal = document.getElementById('temp-val');
+        const tempBadge = document.getElementById('temp-badge');
+        const tempInfo = document.getElementById('temp-info');
+        const tempCard = document.getElementById('temp-card');
+
+        const humidityVal = document.getElementById('humidity-val');
+        const humidityBadge = document.getElementById('humidity-badge');
+        const humidityInfo = document.getElementById('humidity-info');
+        const humidityCard = document.getElementById('humidity-card');
+
+        const doorVal = document.getElementById('door-val');
+        const doorBadge = document.getElementById('door-badge');
+        const doorInfo = document.getElementById('door-info');
+        const doorCard = document.getElementById('door-card');
+
+        const alertVal = document.getElementById('alert-val');
+        const alertBadge = document.getElementById('alert-badge');
+        const alertInfo = document.getElementById('alert-info');
+        const alertCard = document.getElementById('alert-card');
+
+        const activityContainer = document.getElementById('recent-activity-container');
+
+        // Style border class helpers
+        function updateCardBorder(card, status) {
+            card.classList.remove('status-border-info', 'status-border-ok', 'status-border-warning', 'status-border-red');
+            if (status === 'info') card.classList.add('status-border-info');
+            else if (status === 'ok') card.classList.add('status-border-ok');
+            else if (status === 'warning') card.classList.add('status-border-warning');
+            else if (status === 'danger' || status === 'red') {
+                card.classList.add('status-border-red');
+            }
+        }
+
+        // Initialize Chart.js Temp Chart
+        const ctx = document.getElementById('dashboardTempChart').getContext('2d');
+        const labels = [];
+        const tempData = [];
+        const now = new Date();
+        for (let i = 9; i >= 0; i--) {
+            const time = new Date(now.getTime() - i * 60 * 60 * 1000);
+            labels.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            tempData.push(3.5 + Math.random() * 1.5);
+        }
+
+        const tempChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: tempData,
+                    borderColor: '#0051d5',
+                    backgroundColor: 'rgba(0, 81, 213, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        min: 0,
+                        max: 12,
+                        ticks: { stepSize: 2 }
+                    }
+                }
+            }
+        });
+
+        // 1. Subscribe to Temperature
+        onValue(ref(db, 'sensor/temperature'), (snapshot) => {
+            const val = snapshot.val();
+            if (val !== null) {
+                const temp = parseFloat(val);
+                tempVal.innerText = temp.toFixed(1) + '°C';
+                
+                // Update chart live point
+                tempChart.data.datasets[0].data[tempChart.data.datasets[0].data.length - 1] = temp;
+                tempChart.update();
+
+                if (temp > 8) {
+                    tempBadge.innerText = 'HIGH';
+                    tempBadge.className = 'font-badge text-badge text-white bg-error px-2 py-0.5 rounded-full';
+                    tempInfo.innerText = 'Temp high warning';
+                    updateCardBorder(tempCard, 'red');
+                } else {
+                    tempBadge.innerText = 'OPTIMAL';
+                    tempBadge.className = 'font-badge text-badge text-secondary-container bg-secondary px-2 py-0.5 rounded-full';
+                    tempInfo.innerText = 'Within safe range';
+                    updateCardBorder(tempCard, 'info');
+                }
+            }
+        });
+
+        // 2. Subscribe to Humidity
+        onValue(ref(db, 'sensor/humidity'), (snapshot) => {
+            const val = snapshot.val();
+            if (val !== null) {
+                const hum = parseInt(val);
+                humidityVal.innerText = hum + '%';
+                if (hum > 75) {
+                    humidityBadge.innerText = 'HIGH';
+                    humidityBadge.className = 'font-badge text-badge text-white bg-amber-500 px-2 py-0.5 rounded-full';
+                    humidityInfo.innerText = 'High moisture level';
+                    updateCardBorder(humidityCard, 'warning');
+                } else if (hum < 30) {
+                    humidityBadge.innerText = 'LOW';
+                    humidityBadge.className = 'font-badge text-badge text-white bg-amber-500 px-2 py-0.5 rounded-full';
+                    humidityInfo.innerText = 'Low moisture level';
+                    updateCardBorder(humidityCard, 'warning');
+                } else {
+                    humidityBadge.innerText = 'NORMAL';
+                    humidityBadge.className = 'font-badge text-badge text-secondary-container bg-secondary px-2 py-0.5 rounded-full';
+                    humidityInfo.innerText = 'Stable moisture levels';
+                    updateCardBorder(humidityCard, 'info');
+                }
+            }
+        });
+
+        // 3. Subscribe to Door Status
+        onValue(ref(db, 'sensor/doorStatus'), (snapshot) => {
+            const val = snapshot.val();
+            if (val !== null) {
+                const status = val.toUpperCase();
+                doorVal.innerText = status === 'OPEN' ? 'Open' : 'Closed';
+                
+                if (status === 'OPEN') {
+                    doorBadge.innerText = 'WARNING';
+                    doorBadge.className = 'font-badge text-badge text-white bg-error px-2 py-0.5 rounded-full';
+                    doorInfo.innerText = 'Door left open!';
+                    updateCardBorder(doorCard, 'red');
+                } else {
+                    doorBadge.innerText = 'SECURE';
+                    doorBadge.className = 'font-badge text-badge text-on-secondary bg-outline px-2 py-0.5 rounded-full';
+                    doorInfo.innerText = 'Door is closed';
+                    updateCardBorder(doorCard, 'ok');
+                }
+            }
+        });
+
+        // 4. Subscribe to Alerts
+        onValue(ref(db, 'sensor/alert'), (snapshot) => {
+            const val = snapshot.val();
+            if (val && val !== 'NORMAL' && val !== 'None') {
+                alertVal.innerText = val;
+                alertBadge.innerText = 'ACTIVE';
+                alertBadge.className = 'font-badge text-badge text-white bg-error px-2 py-0.5 rounded-full animate-pulse';
+                alertInfo.innerText = 'System anomaly detected';
+                updateCardBorder(alertCard, 'red');
+            } else {
+                alertVal.innerText = 'None';
+                alertBadge.innerText = 'NORMAL';
+                alertBadge.className = 'font-badge text-badge text-on-secondary bg-outline px-2 py-0.5 rounded-full';
+                alertInfo.innerText = 'All systems normal';
+                updateCardBorder(alertCard, 'ok');
+            }
+        });
+
+        // 5. Populate Dynamic Activity Feed
+        onValue(ref(db, 'inventory'), (snapshot) => {
+            const items = snapshot.val() || {};
+            const itemArray = Object.entries(items).map(([id, item]) => ({ id, ...item }));
+            
+            // Sort by createdAt descending
+            itemArray.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            // Fetch last alert for custom alerts activities
+            onValue(ref(db, 'notification/lastAlert'), (alertSnapshot) => {
+                const lastAlert = alertSnapshot.val();
+                
+                let activities = [];
+
+                // 1. Add recent inventory items
+                itemArray.slice(0, 3).forEach(item => {
+                    const timeString = item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently';
+                    activities.push({
+                        title: `${item.name} added`,
+                        detail: `Quantity: ${item.quantity}`,
+                        meta: `${timeString} • User Hub`,
+                        icon: 'add_shopping_cart',
+                        bgClass: 'bg-secondary-fixed text-secondary'
+                    });
+                });
+
+                // 2. Add last alert if active
+                if (lastAlert && lastAlert !== 'NONE' && lastAlert.message) {
+                    const alertTime = lastAlert.timestamp ? new Date(lastAlert.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently';
+                    activities.push({
+                        title: lastAlert.type === 'TEMP_HIGH' ? 'Temp Spike Alert' : 'Door Warning',
+                        detail: lastAlert.message,
+                        meta: `${alertTime} • Refrigerator`,
+                        icon: 'warning',
+                        bgClass: 'bg-error/10 text-error'
+                    });
+                }
+
+                // If no activity, render empty state
+                if (activities.length === 0) {
+                    activityContainer.innerHTML = `<div class="text-center py-8 text-on-surface-variant text-sm">No recent activity.</div>`;
+                    return;
+                }
+
+                // Render activities
+                activityContainer.innerHTML = '';
+                activities.slice(0, 3).forEach(act => {
+                    const actHtml = `
+                        <div class="flex items-start gap-3 border-b border-outline-variant pb-3 last:border-0">
+                            <div class="w-8 h-8 rounded-full ${act.bgClass} flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-[18px]">${act.icon}</span>
+                            </div>
+                            <div>
+                                <p class="text-body-md font-semibold">${act.title}</p>
+                                <p class="text-body-md text-on-surface-variant">${act.detail}</p>
+                                <p class="font-label-md text-label-md text-outline mt-1">${act.meta}</p>
+                            </div>
+                        </div>
+                    `;
+                    activityContainer.insertAdjacentHTML('beforeend', actHtml);
+                });
+            });
+        });
+
+        // Toggle mobile menu sidebar
+        const menuBtn = document.querySelector('[data-icon="menu"]');
+        const sidebar = document.querySelector('aside');
+        if (menuBtn && sidebar) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('flex');
+            });
+        }
+    </script>
+</body></html>

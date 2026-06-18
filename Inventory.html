@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SRMS - Inventory Management</title>
+<script type="module" src="./auth-guard.js"></script>
+<script type="module" src="./navigation.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#acedff",
+                        "inverse-primary": "#bec6e0",
+                        "inverse-surface": "#303032",
+                        "surface": "#fcf8fa",
+                        "surface-container": "#f0edef",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#0090a9",
+                        "secondary": "#0051d5",
+                        "outline": "#76777d",
+                        "primary-container": "#131b2e",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-dim": "#dcd9db",
+                        "surface-tint": "#565e74",
+                        "tertiary-container": "#001f26",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface-container-highest": "#e4e2e4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dae2fd",
+                        "tertiary": "#000000",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f3f0f2",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface-variant": "#45464d",
+                        "on-error": "#ffffff",
+                        "background": "#fcf8fa",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-background": "#1b1b1d",
+                        "on-primary-fixed": "#131b2e",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "secondary-container": "#316bf3",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "on-surface": "#1b1b1d",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-variant": "#e4e2e4",
+                        "surface-bright": "#fcf8fa",
+                        "on-primary-container": "#7c839b",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-container-high": "#eae7e9",
+                        "surface-container-low": "#f6f3f5",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "container-max-width": "1280px",
+                        "card-padding": "1.25rem",
+                        "margin-mobile": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display": ["Hanken Grotesk"],
+                        "badge": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "badge": ["11px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-border-red { border-left: 4px solid #ba1a1a; }
+        .status-border-amber { border-left: 4px solid #f59e0b; }
+        .status-border-green { border-left: 4px solid #10b981; }
+        .custom-shadow { box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);}
+
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- SideNavBar (Desktop) -->
+<aside class="fixed left-0 top-0 h-screen w-[240px] flex flex-col py-6 px-4 border-r border-outline-variant bg-surface-container hidden md:flex z-40">
+<div class="mb-8 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-secondary">SRMS Control</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Unit #402-B</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Dashboard Tab -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<!-- Inventory Tab (Active) -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform bg-secondary-container text-on-secondary-container rounded-lg font-bold">
+<span class="material-symbols-outlined" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</div>
+<!-- Notifications Tab -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</div>
+<!-- Analytics Tab -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<!-- About Tab -->
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-transform text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+<span class="font-label-md text-label-md">About</span>
+</div>
+</nav>
+<div class="mt-auto flex flex-col gap-2 border-t border-outline-variant pt-4">
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-all text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</div>
+<div class="group cursor-pointer flex items-center gap-stack-gap p-3 transition-all text-on-surface-variant hover:bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-[240px] min-h-screen pb-24 md:pb-8">
+<!-- Top Search and Filter Bar -->
+<header class="sticky top-0 z-30 bg-surface/80 backdrop-blur-md px-margin-mobile md:px-margin-desktop py-4 flex flex-col gap-4 border-b border-outline-variant">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg text-primary">Inventory</h2>
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-badge text-badge">42 ITEMS</span>
+</div>
+<div class="flex flex-grow max-w-2xl gap-2">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all font-body-md" placeholder="Search food items..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="hidden sm:inline font-body-md">Filters</span>
+</button>
+<div class="flex border border-outline-variant rounded-lg overflow-hidden">
+<button class="p-2 bg-secondary-container text-on-secondary-container" title="Grid View">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high text-on-surface-variant" title="List View">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid / Inventory Items -->
+<div class="px-margin-mobile md:px-margin-desktop py-6">
+<div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Dynamic cards from Firebase -->
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-6 right-6 md:bottom-10 md:right-10 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50" onclick="document.getElementById('add-modal').classList.remove('hidden')">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container h-16 flex items-center justify-around border-t border-outline-variant md:hidden z-40">
+<div class="flex flex-col items-center text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] uppercase font-bold">Dash</span>
+</div>
+<div class="flex flex-col items-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-[10px] uppercase font-bold">Inv</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-[10px] uppercase font-bold">Alerts</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] uppercase font-bold">Set</span>
+</div>
+</nav>
+<!-- Add Item Modal (Hidden by default) -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4" id="add-modal">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-primary">Add Food Item</h3>
+<button class="p-1 hover:bg-surface-container-high rounded-full" onclick="document.getElementById('add-modal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-on-surface-variant">Item Name</label>
+<input id="item-name" class="w-full px-4 py-2 border border-outline-variant rounded-lg focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none" placeholder="e.g. Almond Milk" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-on-surface-variant">Quantity</label>
+<input id="item-quantity" class="w-full px-4 py-2 border border-outline-variant rounded-lg focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none" type="number" value="1"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-on-surface-variant">Unit</label>
+<select id="item-unit" class="w-full px-4 py-2 border border-outline-variant rounded-lg focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none bg-white">
+<option>Pieces</option>
+<option>Liters</option>
+<option>Grams</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-on-surface-variant">Expiry Date</label>
+<input id="item-expiry" class="w-full px-4 py-2 border border-outline-variant rounded-lg focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none" type="date"/>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant border-dashed flex flex-col items-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary">photo_camera</span>
+<span class="font-body-md text-secondary font-bold">Scan Label or Barcode</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low flex gap-3">
+<button class="flex-1 py-2 border border-secondary text-secondary rounded-lg font-bold hover:bg-secondary/5 transition-colors" onclick="document.getElementById('add-modal').classList.add('hidden')">Cancel</button>
+<button id="add-item-btn" class="flex-1 py-2 bg-secondary text-on-secondary rounded-lg font-bold shadow-md hover:shadow-lg transition-all">Add to Fridge</button>
+</div>
+</div>
+</div>
+<!-- Custom Confirm Delete Modal (Hidden by default) -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4" id="confirm-modal">
+  <div class="bg-surface-container-lowest w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div class="p-6 flex flex-col items-center text-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-error/10 text-error flex items-center justify-center">
+        <span class="material-symbols-outlined text-[32px]">delete</span>
+      </div>
+      <div>
+        <h3 class="font-headline-md text-headline-md text-primary font-bold">Delete Item?</h3>
+        <p class="font-body-md text-on-surface-variant mt-2">Are you sure you want to delete <span id="delete-item-name" class="font-bold"></span> from your fridge inventory? This action cannot be undone.</p>
+      </div>
+    </div>
+    <div class="p-6 bg-surface-container-low flex gap-3">
+      <button id="cancel-delete-btn" class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg font-bold hover:bg-surface-container-high transition-colors">Cancel</button>
+      <button id="confirm-delete-btn" class="flex-1 py-2 bg-error text-on-error rounded-lg font-bold shadow-md hover:brightness-110 transition-all">Delete</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+        import { ref, push, remove, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { db } from "./firebase-init.js";
+
+        // DOM elements
+        const grid = document.getElementById('inventory-grid');
+        const modal = document.getElementById('add-modal');
+        const nameInput = document.getElementById('item-name');
+        const qtyInput = document.getElementById('item-quantity');
+        const unitSelect = document.getElementById('item-unit');
+        const expiryInput = document.getElementById('item-expiry');
+        const addBtn = document.getElementById('add-item-btn');
+
+        // Confirm modal DOM elements
+        let activeDeleteId = null;
+        const confirmModal = document.getElementById('confirm-modal');
+        const deleteItemNameSpan = document.getElementById('delete-item-name');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+
+        // Modal interaction
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            } else if (event.target == confirmModal) {
+                confirmModal.classList.add('hidden');
+                activeDeleteId = null;
+            }
+        }
+
+        if (confirmDeleteBtn && cancelDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', async () => {
+                if (activeDeleteId) {
+                    try {
+                        await remove(ref(db, `inventory/${activeDeleteId}`));
+                    } catch (err) {
+                        console.error("Firebase delete failed:", err);
+                    }
+                    confirmModal.classList.add('hidden');
+                    activeDeleteId = null;
+                }
+            });
+            cancelDeleteBtn.addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+                activeDeleteId = null;
+            });
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            nameInput.value = '';
+            qtyInput.value = '1';
+            unitSelect.selectedIndex = 0;
+            expiryInput.value = '';
+            addBtn.removeAttribute('data-edit-id');
+            addBtn.innerText = 'Add to Fridge';
+        }
+
+        // Micro-interactions for search focus
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('scale-[1.01]');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('scale-[1.01]');
+            });
+        }
+
+        // Expiry calculation helper
+        function getExpiryStatus(expiryDateStr) {
+            if (!expiryDateStr) {
+                return {
+                    label: 'Fresh',
+                    badgeClass: 'hidden',
+                    borderClass: 'status-border-green',
+                    textClass: 'text-green-600',
+                    icon: 'check_circle',
+                    infoText: 'No expiry'
+                };
+            }
+            const exp = new Date(expiryDateStr);
+            const now = new Date();
+            now.setHours(0,0,0,0);
+            exp.setHours(0,0,0,0);
+            const diffTime = exp - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) {
+                return {
+                    label: 'Expired',
+                    badgeClass: 'bg-error text-on-error',
+                    borderClass: 'status-border-red',
+                    textClass: 'text-error',
+                    icon: 'calendar_today',
+                    infoText: `Expired ${Math.abs(diffDays)}d ago`
+                };
+            } else if (diffDays <= 3) {
+                return {
+                    label: 'Expiring Soon',
+                    badgeClass: 'bg-amber-500 text-white',
+                    borderClass: 'status-border-amber',
+                    textClass: 'text-amber-600',
+                    icon: 'timer',
+                    infoText: diffDays === 0 ? 'Expires today' : `${diffDays} days left`
+                };
+            } else {
+                return {
+                    label: 'Fresh',
+                    badgeClass: 'hidden',
+                    borderClass: 'status-border-green',
+                    textClass: 'text-green-600',
+                    icon: 'check_circle',
+                    infoText: `${diffDays} days left`
+                };
+            }
+        }
+
+        // Expiry categorization icon helper
+        function getCategoryIcon(name) {
+            const lower = name.toLowerCase();
+            if (lower.includes('milk') || lower.includes('cheese') || lower.includes('yogurt') || lower.includes('dairy')) {
+                return 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400';
+            } else if (lower.includes('avocado') || lower.includes('fruit') || lower.includes('strawberry') || lower.includes('berry') || lower.includes('apple') || lower.includes('orange')) {
+                return 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=400';
+            } else if (lower.includes('chicken') || lower.includes('meat') || lower.includes('beef') || lower.includes('pork')) {
+                return 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400';
+            }
+            return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
+        }
+
+        // Subscribe to Firebase inventory updates
+        onValue(ref(db, 'inventory'), (snapshot) => {
+            const items = snapshot.val() || {};
+            grid.innerHTML = '';
+            
+            Object.entries(items).forEach(([id, item]) => {
+                const status = getExpiryStatus(item.expiryDate);
+                const imgUrl = getCategoryIcon(item.name);
+                const cardHtml = `
+                    <div class="bg-surface-container-lowest rounded-xl p-card-padding shadow-[0px_4px_20px_rgba(15,23,42,0.05)] ${status.borderClass} flex flex-col gap-3 group hover:scale-[1.02] transition-transform duration-200 cursor-pointer" data-id="${id}">
+                        <div class="relative aspect-video rounded-lg overflow-hidden bg-surface-container-high">
+                            <img alt="${item.name}" class="w-full h-full object-cover" src="${imgUrl}" />
+                            <div class="absolute top-2 right-2 ${status.badgeClass === 'hidden' ? 'hidden' : ''}">
+                                <span class="${status.badgeClass} font-badge text-badge px-2 py-1 rounded-full uppercase">${status.label}</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-headline-md text-headline-md text-primary item-name">${item.name}</h3>
+                                <p class="font-label-md text-label-md text-on-surface-variant">Qty: ${item.quantity} ${item.unit || 'Pieces'}</p>
+                            </div>
+                            <span class="font-display text-display text-primary">${item.quantity}</span>
+                        </div>
+                        <div class="mt-auto pt-2 border-t border-outline-variant flex justify-between items-center">
+                            <div class="flex items-center gap-1 ${status.textClass}">
+                                <span class="material-symbols-outlined text-[18px]">${status.icon}</span>
+                                <span class="font-label-md">${status.infoText}</span>
+                            </div>
+                            <button class="delete-btn text-error hover:bg-error/10 p-1.5 rounded-full transition-colors material-symbols-outlined opacity-0 group-hover:opacity-100" data-id="${id}">delete</button>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+            
+            // Append the Add New State Card
+            const addCardHtml = `
+                <div onclick="document.getElementById('add-modal').classList.remove('hidden')" class="border-2 border-dashed border-outline-variant rounded-xl p-card-padding flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-low transition-colors cursor-pointer min-h-[300px]">
+                    <span class="material-symbols-outlined text-[48px]">add_circle</span>
+                    <span class="font-headline-md">Add New Item</span>
+                    <span class="font-body-md text-center px-4">Manual entry or camera scan</span>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', addCardHtml);
+            
+            // Bind delete button listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    activeDeleteId = btn.getAttribute('data-id');
+                    const card = btn.closest('[data-id]');
+                    const itemName = card ? card.querySelector('.item-name').innerText : 'this item';
+                    deleteItemNameSpan.innerText = itemName;
+                    confirmModal.classList.remove('hidden');
+                });
+            });
+
+            // Bind edit/update listeners by clicking the card (excluding delete button clicks)
+            document.querySelectorAll('#inventory-grid > div[data-id]').forEach(card => {
+                card.addEventListener('click', () => {
+                    const itemId = card.getAttribute('data-id');
+                    const item = items[itemId];
+                    if (item) {
+                        nameInput.value = item.name;
+                        qtyInput.value = item.quantity;
+                        unitSelect.value = item.unit || 'Pieces';
+                        expiryInput.value = item.expiryDate || '';
+                        
+                        modal.classList.remove('hidden');
+                        addBtn.innerText = 'Update Item';
+                        addBtn.setAttribute('data-edit-id', itemId);
+                    }
+                });
+            });
+        });
+
+        // Add/Update Form Submission
+        addBtn.addEventListener('click', async () => {
+            const name = nameInput.value.trim();
+            const quantity = parseInt(qtyInput.value) || 1;
+            const unit = unitSelect.value;
+            const expiryDate = expiryInput.value;
+            const editId = addBtn.getAttribute('data-edit-id');
+            
+            if (!name) {
+                alert('Item name is required!');
+                return;
+            }
+            
+            const itemData = {
+                name,
+                quantity,
+                unit,
+                expiryDate,
+                createdAt: Date.now()
+            };
+            
+            try {
+                if (editId) {
+                    await set(ref(db, `inventory/${editId}`), itemData);
+                } else {
+                    const newRef = push(ref(db, 'inventory'));
+                    await set(newRef, itemData);
+                }
+                closeModal();
+            } catch (err) {
+                console.error("Firebase update failed:", err);
+                alert("Failed to save item. Please check your network/permissions.");
+            }
+        });
+    </script>
+</body></html>
